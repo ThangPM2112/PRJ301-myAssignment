@@ -1,19 +1,24 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package controller;
 
+import dal.GroupDAO;
+import dal.StudentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Student;
 
 /**
  *
- * @author Manh Thang
+ * @author Admin
  */
 public class GroupStudent extends HttpServlet {
 
@@ -29,18 +34,26 @@ public class GroupStudent extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet GroupStudent</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet GroupStudent at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        StudentDAO sdao = new StudentDAO();
+        GroupDAO gdao = new GroupDAO();
+        String campus = request.getParameter("campus");
+        String term = request.getParameter("term");
+        String dept = request.getParameter("dept");
+        String courseid = request.getParameter("courseid");
+        String group = request.getParameter("group");
+        ArrayList campuslist = gdao.getAllCampus();
+        ArrayList termlist = gdao.getAllTerm(campus);
+        ArrayList departmentlist = gdao.getAllDep(term);
+        ArrayList courselist = gdao.getAllSubject(term, dept);
+        ArrayList grouplist = gdao.getAllGroup(term, dept, courseid);
+        ArrayList<Student> liststudent = sdao.getAllStudent(group);
+        request.setAttribute("liststudent", liststudent);
+        request.setAttribute("campuslist", campuslist);
+        request.setAttribute("termlist", termlist);
+        request.setAttribute("departmentlist", departmentlist);
+        request.setAttribute("courselist", courselist);
+        request.setAttribute("grouplist", grouplist);
+        request.getRequestDispatcher("DisplayGroup.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
